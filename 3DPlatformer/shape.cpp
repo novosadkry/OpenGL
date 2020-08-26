@@ -168,7 +168,23 @@ Cube::Cube()
 
     Object obj;
 
-    LoadObjectFromFile(&obj, "res/objects/cube.obj");
+    LoadObjectFromFile(&obj, "res/obj/cube.obj");
+    std::vector<glm::vec3> vertices = GenerateObjectVertices(obj);
+
+    this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(glm::vec3));
+    this->indices = obj.vert_indices.size();
+
+    GLCALL(glBindVertexArray(0));
+}
+
+ShapedObject::ShapedObject(const char* object_path)
+{
+    GLCALL(glGenVertexArrays(1, &this->vao));
+    GLCALL(glBindVertexArray(this->vao));
+
+    Object obj;
+
+    LoadObjectFromFile(&obj, object_path);
     std::vector<glm::vec3> vertices = GenerateObjectVertices(obj);
 
     this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(glm::vec3));

@@ -17,18 +17,24 @@ int main()
         return -1;
 
     glfwMakeContextCurrent(screen::window);
+    //glfwSwapInterval(0);
 
     if (glewInit() != GLEW_OK)
         return -1;
 
     shaders::base_shader = CreateShaderProgram();
 
-    Shape* cube = new Cube();
+    std::vector<Shape*> shapes;
+
+    Shape* cube = new ShapedObject("res/obj/zuga.obj");
     cube->color = { 1.0f, 0.2f, 0.2f, 1.0f };
 
     Shape* cubeLight = new Cube();
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight->position = { 0.3f, 0.3f, 5.0f };
+
+    shapes.push_back(cube);
+    shapes.push_back(cubeLight);
 
     Camera cam;
     cam.position = { 0.0f, 0.0f, 5.0f };
@@ -48,8 +54,8 @@ int main()
         GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        cube->Draw();
-        cubeLight->Draw();
+        for (auto& shape : shapes)
+            shape->Draw();
 
         handleInput(screen::window);
         
@@ -57,11 +63,14 @@ int main()
         render::deltaTime = currentFrame - render::lastFrame;
         render::lastFrame = currentFrame;
 
+        std::cout << "FPS: " << 1.0f / render::deltaTime << std::endl;
+
         GLCALL(glfwSwapBuffers(screen::window));
         GLCALL(glfwPollEvents());
     }
 
-    delete cube;
+    for (auto& shape : shapes)
+        delete shape;
 
     glDeleteProgram(shaders::base_shader);
     glfwTerminate();

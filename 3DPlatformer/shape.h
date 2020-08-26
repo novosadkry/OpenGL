@@ -16,7 +16,7 @@ protected:
 
 public:
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
-	glm::quat rotation = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glm::quat rotation = glm::quat(glm::vec3(0, 0, 0));
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
 	glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -35,6 +35,12 @@ class Cube : public Shape
 {
 public:
 	Cube();
+};
+
+class ShapedObject : public Shape
+{
+public:
+	ShapedObject(const char* object_path);
 };
 
 class Camera

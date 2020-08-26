@@ -16,7 +16,7 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{5365f28e-647f-4617-a336-b36c900d2c1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\objects">
+    <Filter Include="Resource Files\obj">
       <UniqueIdentifier>{6f0df7bc-d4b3-418a-b025-1bf589cdd8f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -72,8 +72,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="res\objects\cube.obj">
-      <Filter>Resource Files\objects</Filter>
+    <Object Include="res\obj\cube.obj">
+      <Filter>Resource Files\obj</Filter>
     </Object>
   </ItemGroup>
 </Project>
