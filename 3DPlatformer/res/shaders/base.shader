@@ -3,9 +3,11 @@
 
 layout(location = 0) in vec3 vertex_pos;
 layout(location = 1) in vec3 vertex_normal;
+layout(location = 2) in vec2 vertex_uv;
 
 out vec3 normal;
 out vec3 fragPos;
+out vec2 uv;
 
 uniform mat4 u_Transform;
 uniform mat4 u_MVP;
@@ -15,6 +17,7 @@ void main()
    gl_Position = u_MVP * u_Transform * vec4(vertex_pos, 1.0);
    fragPos = vec3(u_Transform * vec4(vertex_pos, 1.0));
    normal = vec3(u_Transform * vec4(vertex_normal, 0.0));
+   uv = vertex_uv;
 };
 
 #shader fragment
@@ -29,10 +32,12 @@ struct Light
 
 in vec3 normal;
 in vec3 fragPos;
+in vec2 uv;
 
-out vec4 color;
+out vec4 FragColor;
 
 uniform vec4 u_Color;
+uniform sampler2D u_Texture;
 
 uniform Light[16] u_Light;
 uniform int u_Light_Count;
@@ -64,5 +69,5 @@ void main()
 {
 	vec3 result_color = calculateLight(u_Light, u_Light_Count);
 
-	color = vec4(result_color, u_Color.w);
+	FragColor = vec4(result_color, u_Color.w) * texture(u_Texture, uv);
 };

@@ -5,25 +5,31 @@
 #include "render.h"
 #include "object.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "texture.h"
+
 #include <glm\gtx\transform.hpp>
 #include <iostream>
 
-static GLuint GenerateVBO(glm::vec3* vertices, GLsizei vertices_size)
+static GLuint GenerateVBO(GLfloat* vertices, GLsizei vertices_size)
 {
     GLuint buffer;
     GLCALL(glGenBuffers(1, &buffer));
     GLCALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     GLCALL(glBufferData(GL_ARRAY_BUFFER, vertices_size, vertices, GL_STATIC_DRAW));
 
-    GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) * 2, 0));
+    GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, 0));
     GLCALL(glEnableVertexAttribArray(0));
 
-    GLCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) * 2, (void*)sizeof(glm::vec3)));
+    GLCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void*)(sizeof(GLfloat) * 3)));
     GLCALL(glEnableVertexAttribArray(1));
+
+    GLCALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void*)(sizeof(GLfloat) * 6)));
+    GLCALL(glEnableVertexAttribArray(2));
 
     GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-    std::cout << "[OpenGL:INFO] Generated object VBO (" << vertices_size / (sizeof(glm::vec3) * 2) << " vertices, " << vertices_size << " bytes)" << std::endl;
+    std::cout << "[OpenGL:INFO] Generated object VBO (" << vertices_size / (sizeof(GLfloat) * 8) << " vertices, " << vertices_size << " bytes)" << std::endl;
 
     return buffer;
 }
@@ -142,6 +148,11 @@ void Shape::Draw()
     VBOColor(this->color);
     VBOShading(&render::lights);
 
+    if (this->texture)
+    {
+        GLCALL(glBindTexture(GL_TEXTURE_2D, texture));
+    }
+
     if (this->ibo)
     {
         GLCALL(glDrawElements(GL_TRIANGLES, this->indices, GL_UNSIGNED_INT, nullptr));
@@ -152,6 +163,7 @@ void Shape::Draw()
         GLCALL(glDrawArrays(GL_TRIANGLES, 0, this->indices));
     }
 
+    GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
     GLCALL(glBindVertexArray(0));
 }
 
@@ -159,44 +171,11 @@ Shape::~Shape()
 {
     GLuint buffers[] = { vbo, ibo };
     GLCALL(glDeleteBuffers(2, buffers));
+    GLCALL(glDeleteTextures(1, &texture));
     GLCALL(glDeleteVertexArrays(1, &vao));
 }
 
-Plane::Plane()
-{
-    glm::vec3 vertices[] = {
-        { 0, 0, 0,}, { 0, 0, -1 },
-        { 1, 0, 0 }, { 0, 0, -1 },
-        { 1, 1, 0 }, { 0, 0, -1 },
-        { 0, 1, 0 }, { 0, 0, -1 },
-    };
-
-    GLuint indices[] = {
-        0, 1, 2, 2, 3, 0
-    };
-
-    this->vbo = GenerateVBO(vertices, sizeof(vertices));
-    this->ibo = GenerateIBO(indices, sizeof(indices));
-    this->indices = sizeof(indices) / sizeof(indices[0]);
-}
-
-Cube::Cube()
-{
-    GLCALL(glGenVertexArrays(1, &this->vao));
-    GLCALL(glBindVertexArray(this->vao));
-
-    Object obj;
-
-    LoadObjectFromFile(&obj, "res/obj/cube.obj");
-    std::vector<glm::vec3> vertices = GenerateObjectVertices(obj);
-
-    this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(glm::vec3));
-    this->indices = obj.vert_indices.size();
-
-    GLCALL(glBindVertexArray(0));
-}
-
-ShapedObject::ShapedObject(const char* object_path)
+ShapedObject::ShapedObject(const char* object_path, const char* texture_path)
 {
     GLCALL(glGenVertexArrays(1, &this->vao));
     GLCALL(glBindVertexArray(this->vao));
@@ -204,10 +183,11 @@ ShapedObject::ShapedObject(const char* object_path)
     Object obj;
 
     LoadObjectFromFile(&obj, object_path);
-    std::vector<glm::vec3> vertices = GenerateObjectVertices(obj);
+    std::vector<GLfloat> vertices = GenerateObjectVertices(obj);
 
-    this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(glm::vec3));
+    this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(GLfloat));
     this->indices = obj.vert_indices.size();
+    this->texture = GenerateTexture(texture_path);
 
     GLCALL(glBindVertexArray(0));
 }

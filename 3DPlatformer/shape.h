@@ -14,6 +14,8 @@ protected:
 	GLuint ibo = 0;
 	GLsizei indices;
 
+	GLuint texture = 0;
+
 public:
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 	glm::quat rotation = glm::quat(glm::vec3(0, 0, 0));
@@ -25,22 +27,10 @@ public:
 	~Shape();
 };
 
-class Plane : public Shape
-{
-public:
-	Plane();
-};
-
-class Cube : public Shape
-{
-public:
-	Cube();
-};
-
 class ShapedObject : public Shape
 {
 public:
-	ShapedObject(const char* object_path);
+	ShapedObject(const char* object_path, const char* texture_path);
 };
 
 class Camera
