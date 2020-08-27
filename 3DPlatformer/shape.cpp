@@ -5,7 +5,7 @@
 #include "render.h"
 #include "object.h"
 
-#include "glm\gtx\transform.hpp"
+#include <glm\gtx\transform.hpp>
 
 static GLuint GenerateVBO(glm::vec3* vertices, GLsizei vertices_size)
 {
@@ -20,7 +20,7 @@ static GLuint GenerateVBO(glm::vec3* vertices, GLsizei vertices_size)
     GLCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) * 2, (void*)sizeof(glm::vec3)));
     GLCALL(glEnableVertexAttribArray(1));
 
-    //GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     return buffer;
 }
@@ -32,7 +32,7 @@ static GLuint GenerateIBO(GLuint* indices, GLsizei indices_size)
     GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer));
     GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices, GL_STATIC_DRAW));
 
-    //GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
     return buffer;
 }

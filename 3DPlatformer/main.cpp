@@ -4,8 +4,8 @@
 #include "error.h"
 #include "render.h"
 
-#include "glm\glm.hpp"
-#include "glm\gtx\string_cast.hpp"
+#include <glm\glm.hpp>
+#include <glm\gtx\string_cast.hpp>
 
 #include <iostream>
 
