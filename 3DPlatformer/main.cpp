@@ -24,8 +24,6 @@ int main()
 
     shaders::base_shader = CreateShaderProgram();
 
-    std::vector<Shape*> shapes;
-
     Shape* cube = new ShapedObject("res/obj/zuga.obj");
     cube->color = { 1.0f, 0.2f, 0.2f, 1.0f };
 
@@ -33,18 +31,25 @@ int main()
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight->position = { 0.3f, 0.3f, 5.0f };
 
-    shapes.push_back(cube);
-    shapes.push_back(cubeLight);
+    Shape* cubeLight2 = new Cube();
+    cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
+    cubeLight2->position = { 1.0f, 0.3f, -5.0f };
 
-    Camera cam;
-    cam.position = { 0.0f, 0.0f, 5.0f };
+    render::shapes.push_back(cube);
+    render::shapes.push_back(cubeLight);
+    render::shapes.push_back(cubeLight2);
 
     Light light;
     light.intensity = 5.0f;
     light.position = &cubeLight->position;
 
-    render::cam = &cam;
-    render::light = &light;
+    Light light2;
+    light2.intensity = 5.0f;
+    light2.position = &cubeLight2->position;
+
+    render::cam.position = { 0.0f, 0.0f, 5.0f };
+    render::lights.push_back(light);
+    render::lights.push_back(light2);
 
     GLCALL(glEnable(GL_CULL_FACE));
     GLCALL(glEnable(GL_DEPTH_TEST));
@@ -54,7 +59,7 @@ int main()
         GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        for (auto& shape : shapes)
+        for (auto& shape : render::shapes)
             shape->Draw();
 
         handleInput(screen::window);
@@ -69,7 +74,7 @@ int main()
         GLCALL(glfwPollEvents());
     }
 
-    for (auto& shape : shapes)
+    for (auto& shape : render::shapes)
         delete shape;
 
     glDeleteProgram(shaders::base_shader);

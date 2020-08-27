@@ -81,20 +81,36 @@ static void VBOColor(glm::vec4 color)
     GLCALL(glUniform4f(loc, color.x, color.y, color.z, color.w));
 }
 
-static void VBOShading(Light* light)
+static void VBOShading(std::vector<Light>* lights)
 {
-    GLCALL(GLint pos_loc = glGetUniformLocation(shaders::base_shader, "u_Light.position"));
-    ASSERT(pos_loc != -1);
+    for (int i = 0; i < lights->size(); i++)
+    {
+        Light& light = lights->at(i);
+        char s[32];
 
-    GLCALL(GLint color_loc = glGetUniformLocation(shaders::base_shader, "u_Light.color"));
-    ASSERT(color_loc != -1);
+        sprintf_s(s, "u_Light[%d].position", i);
 
-    GLCALL(GLint intensity_loc = glGetUniformLocation(shaders::base_shader, "u_Light.intensity"));
-    ASSERT(intensity_loc != -1);
+        GLCALL(GLint pos_loc = glGetUniformLocation(shaders::base_shader, s));
+        ASSERT(pos_loc != -1);
 
-    GLCALL(glUniform3f(pos_loc, light->position->x, light->position->y, light->position->z));
-    GLCALL(glUniform3f(color_loc, light->color.x, light->color.y, light->color.z));
-    GLCALL(glUniform1f(intensity_loc, light->intensity));
+        sprintf_s(s, "u_Light[%d].color", i);
+
+        GLCALL(GLint color_loc = glGetUniformLocation(shaders::base_shader, s));
+        ASSERT(color_loc != -1);
+
+        sprintf_s(s, "u_Light[%d].intensity", i);
+
+        GLCALL(GLint intensity_loc = glGetUniformLocation(shaders::base_shader, s));
+        ASSERT(intensity_loc != -1);
+
+        GLCALL(glUniform3f(pos_loc, light.position->x, light.position->y, light.position->z));
+        GLCALL(glUniform3f(color_loc, light.color.x, light.color.y, light.color.z));
+        GLCALL(glUniform1f(intensity_loc, light.intensity));
+    }
+
+    GLCALL(GLint light_count_loc = glGetUniformLocation(shaders::base_shader, "u_Light_Count"));
+    ASSERT(light_count_loc != -1);
+    GLCALL(glUniform1i(light_count_loc, lights->size()));
 }
 
 glm::vec3 Camera::GetForwardVector()
@@ -118,10 +134,10 @@ void Shape::Draw()
     GLCALL(glUseProgram(shaders::base_shader));
 
     VBOTransform(this->position, this->rotation, this->scale);
-    VBOModelViewProjection(render::cam);
+    VBOModelViewProjection(&render::cam);
 
     VBOColor(this->color);
-    VBOShading(render::light);
+    VBOShading(&render::lights);
 
     if (this->ibo)
     {

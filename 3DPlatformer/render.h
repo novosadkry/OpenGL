@@ -6,10 +6,9 @@
 
 namespace render
 {
-	extern Camera* cam;
-	extern Light* light;
-
-	extern std::vector<Shape*>* shapes;
+	extern Camera cam;
+	extern std::vector<Light> lights;
+	extern std::vector<Shape*> shapes;
 
 	extern float lastFrame;
 	extern float deltaTime;
