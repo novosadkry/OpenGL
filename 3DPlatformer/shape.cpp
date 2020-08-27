@@ -83,13 +83,13 @@ static void VBOColor(glm::vec4 color)
 
 static void VBOShading(Light* light)
 {
-    GLCALL(GLint pos_loc = glGetUniformLocation(shaders::base_shader, "u_LightPos"));
+    GLCALL(GLint pos_loc = glGetUniformLocation(shaders::base_shader, "u_Light.position"));
     ASSERT(pos_loc != -1);
 
-    GLCALL(GLint color_loc = glGetUniformLocation(shaders::base_shader, "u_LightColor"));
+    GLCALL(GLint color_loc = glGetUniformLocation(shaders::base_shader, "u_Light.color"));
     ASSERT(color_loc != -1);
 
-    GLCALL(GLint intensity_loc = glGetUniformLocation(shaders::base_shader, "u_LightIntensity"));
+    GLCALL(GLint intensity_loc = glGetUniformLocation(shaders::base_shader, "u_Light.intensity"));
     ASSERT(intensity_loc != -1);
 
     GLCALL(glUniform3f(pos_loc, light->position->x, light->position->y, light->position->z));

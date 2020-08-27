@@ -20,6 +20,13 @@ void main()
 #shader fragment
 #version 330 core
 
+struct Light
+{
+	vec3 position;
+	vec3 color;
+	float intensity;
+};
+
 in vec3 normal;
 in vec3 fragPos;
 
@@ -27,19 +34,17 @@ out vec4 color;
 
 uniform vec4 u_Color;
 
-uniform vec3 u_LightPos;
-uniform vec3 u_LightColor;
-uniform float u_LightIntensity;
+uniform Light u_Light;
 
 void main()
 {
-	vec3 light_Dir = normalize(u_LightPos - fragPos);
-	float light_Dist = length(u_LightPos - fragPos);
+	vec3 light_Dir = normalize(u_Light.position - fragPos);
+	float light_Dist = length(u_Light.position - fragPos);
 
 	float diff = max(dot(normal, light_Dir), 0.0);
-	diff = diff * (u_LightIntensity / (1.0 + (0.25 * light_Dist * light_Dist)));
+	diff = diff * (u_Light.intensity / (1.0 + (0.25 * light_Dist * light_Dist)));
 
-	vec3 diffuse = diff * u_LightColor;
+	vec3 diffuse = diff * u_Light.color;
 	vec3 ambient = vec3(0.3, 0.3, 0.3);
 
 	vec3 result_color = (ambient + diffuse) * vec3(u_Color);
