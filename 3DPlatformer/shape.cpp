@@ -6,6 +6,7 @@
 #include "object.h"
 
 #include <glm\gtx\transform.hpp>
+#include <iostream>
 
 static GLuint GenerateVBO(glm::vec3* vertices, GLsizei vertices_size)
 {
@@ -21,6 +22,8 @@ static GLuint GenerateVBO(glm::vec3* vertices, GLsizei vertices_size)
     GLCALL(glEnableVertexAttribArray(1));
 
     GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+    std::cout << "[OpenGL:INFO] Generated object VBO (" << vertices_size / (sizeof(glm::vec3) * 2) << " vertices, " << vertices_size << " bytes)" << std::endl;
 
     return buffer;
 }

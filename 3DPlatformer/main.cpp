@@ -24,8 +24,12 @@ int main()
 
     shaders::base_shader = CreateShaderProgram();
 
-    Shape* cube = new ShapedObject("res/obj/zuga.obj");
-    cube->color = { 1.0f, 0.2f, 0.2f, 1.0f };
+    Shape* textShape = new ShapedObject("res/obj/zuga.obj");
+    textShape->color = { 1.0f, 0.2f, 0.2f, 1.0f };
+
+    Shape* oniichan = new ShapedObject("res/obj/4chan.obj");
+    oniichan->position = { 0.2f, 1.0f, 0.2f };
+    oniichan->color = { 0.2f, 1.0f, 0.2f, 1.0f };
 
     Shape* cubeLight = new Cube();
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
@@ -33,9 +37,10 @@ int main()
 
     Shape* cubeLight2 = new Cube();
     cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
-    cubeLight2->position = { 1.0f, 0.3f, -5.0f };
+    cubeLight2->position = { 2.3f, 0.3f, 5.0f };
 
-    render::shapes.push_back(cube);
+    render::shapes.push_back(textShape);
+    render::shapes.push_back(oniichan);
     render::shapes.push_back(cubeLight);
     render::shapes.push_back(cubeLight2);
 
@@ -68,7 +73,7 @@ int main()
         render::deltaTime = currentFrame - render::lastFrame;
         render::lastFrame = currentFrame;
 
-        std::cout << "FPS: " << 1.0f / render::deltaTime << std::endl;
+        //std::cout << "FPS: " << 1.0f / render::deltaTime << std::endl;
 
         GLCALL(glfwSwapBuffers(screen::window));
         GLCALL(glfwPollEvents());

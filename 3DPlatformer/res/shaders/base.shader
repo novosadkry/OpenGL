@@ -37,26 +37,32 @@ uniform vec4 u_Color;
 uniform Light[16] u_Light;
 uniform int u_Light_Count;
 
-vec3 calculateLight(Light light)
+vec3 calculateLight(Light[16] lights, int light_count)
 {
-	vec3 light_Dir = normalize(light.position - fragPos);
-	float light_Dist = length(light.position - fragPos);
-
-	float diff = max(dot(normal, light_Dir), 0.0);
-	diff = diff * (light.intensity / (1.0 + (0.25 * light_Dist * light_Dist)));
-
-	vec3 diffuse = diff * light.color;
+	vec3 result_color;
 	vec3 ambient = vec3(0.3, 0.3, 0.3);
 
-	return (ambient + diffuse) * vec3(u_Color);
+	for (int i = 0; i < light_count; i++)
+	{
+		Light light = lights[i];
+
+		vec3 light_Dir = normalize(light.position - fragPos);
+		float light_Dist = length(light.position - fragPos);
+
+		float diff = max(dot(normal, light_Dir), 0.0);
+		diff = diff * (light.intensity / (1.0 + (0.25 * light_Dist * light_Dist)));
+
+		vec3 diffuse = diff * light.color;
+
+		result_color += diffuse * vec3(u_Color);
+	}
+
+	return result_color + (ambient * vec3(u_Color));
 }
 
 void main()
 {
-	vec3 result_color;
-
-	for (int i = 0; i < u_Light_Count; i++)
-		result_color += calculateLight(u_Light[i]);
+	vec3 result_color = calculateLight(u_Light, u_Light_Count);
 
 	color = vec4(result_color, u_Color.w);
 };
