@@ -58,9 +58,9 @@ std::vector<GLfloat> GenerateObjectVertices(Object& obj)
 
     for (int i = 0; i < obj.vert_indices.size(); i++)
     {
-        int vert_index = obj.vert_indices.at(i);
-        int normal_index = obj.normal_indices.at(i);
-        int uvs_index = obj.uv_indices.at(i);
+        int vert_index = obj.vert_indices[i];
+        int normal_index = obj.normal_indices[i];
+        int uvs_index = obj.uv_indices[i];
 
         out.push_back(obj.vertices[vert_index].x);
         out.push_back(obj.vertices[vert_index].y);
