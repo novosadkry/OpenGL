@@ -4,6 +4,9 @@
 #include "error.h"
 #include "render.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "texture.h"
+
 #include <glm\glm.hpp>
 #include <glm\gtx\string_cast.hpp>
 
@@ -24,21 +27,37 @@ int main()
 
     shaders::base_shader = CreateShaderProgram();
 
-    Shape* textShape = new ShapedObject("res/obj/napis.obj", "res/textures/white.png");
+    Material defaultMat;
+    defaultMat.ambient = { 0.2f, 0.2f, 0.2f };
+    defaultMat.shininess = 32.0f;
+    defaultMat.diffuse = GenerateTexture("res/textures/white.png");
+    defaultMat.specular = GenerateTexture("res/textures/white.png");
+    defaultMat.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    Material crateMat;
+    crateMat.ambient = { 0.2f, 0.2f, 0.2f };
+    crateMat.shininess = 32.0f;
+    crateMat.diffuse = GenerateTexture("res/textures/container.png");
+    crateMat.specular = GenerateTexture("res/textures/container_specular.png");
+    crateMat.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    Shape* textShape = new ShapedObject("res/obj/napis.obj");
     textShape->position = { 2.0f, 0.0f, 0.0f };
-    textShape->color = { 1.0f, 0.0f, 0.0f, 1.0f };
+    textShape->material = defaultMat;
 
-    Shape* crate = new ShapedObject("res/obj/cube.obj", "res/textures/crate.png");
+    Shape* crate = new ShapedObject("res/obj/cube.obj");
     crate->position = { 0.0f, 0.0f, 0.0f };
-    crate->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    crate->material = crateMat;
 
-    Shape* cubeLight = new ShapedObject("res/obj/cube.obj", "res/textures/white.png");
+    Shape* cubeLight = new ShapedObject("res/obj/cube.obj");
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight->position = { 0.3f, 0.3f, 5.0f };
+    cubeLight->material = defaultMat;
 
-    Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj", "res/textures/white.png");
+    Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj");
     cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight2->position = { 2.3f, 0.3f, 5.0f };
+    cubeLight2->material = defaultMat;
 
     render::shapes.push_back(textShape);
     render::shapes.push_back(crate);
@@ -46,11 +65,11 @@ int main()
     render::shapes.push_back(cubeLight2);
 
     Light light;
-    light.intensity = 1.0f;
+    light.intensity = 2.0f;
     light.position = &cubeLight->position;
 
     Light light2;
-    light2.intensity = 1.0f;
+    light2.intensity = 2.0f;
     light2.position = &cubeLight2->position;
 
     render::cam.position = { 0.0f, 0.0f, 5.0f };

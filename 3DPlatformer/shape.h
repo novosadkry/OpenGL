@@ -16,14 +16,12 @@ protected:
 	GLuint ibo = 0;
 	GLsizei indices;
 
-	GLuint texture = 0;
-	Material material = materials::none;
-
 public:
+	Material material;
+
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 	glm::quat rotation = glm::quat(glm::vec3(0, 0, 0));
 	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-	glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	virtual void Draw();
 
@@ -33,7 +31,7 @@ public:
 class ShapedObject : public Shape
 {
 public:
-	ShapedObject(const char* object_path, const char* texture_path);
+	ShapedObject(const char* object_path);
 };
 
 class Camera

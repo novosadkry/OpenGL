@@ -5,9 +5,6 @@
 #include "render.h"
 #include "object.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "texture.h"
-
 #include <glm\gtx\transform.hpp>
 #include <iostream>
 
@@ -92,17 +89,16 @@ static void VBOModelViewProjection(Camera* cam)
     GLCALL(glUniform3f(viewPos_loc, cam->position.x, cam->position.y, cam->position.z));
 }
 
-static void VBOColor(glm::vec4 color)
-{
-    GLCALL(GLint loc = glGetUniformLocation(shaders::base_shader, "u_Color"));
-    ASSERT(loc != -1);
-    GLCALL(glUniform4f(loc, color.x, color.y, color.z, color.w));
-}
-
 static void VBOMaterial(Material material)
 {
     GLCALL(GLint ambient_loc = glGetUniformLocation(shaders::base_shader, "u_Material.ambient"));
     ASSERT(ambient_loc != -1);
+
+    GLCALL(GLint shininess_loc = glGetUniformLocation(shaders::base_shader, "u_Material.shininess"));
+    ASSERT(shininess_loc != -1);
+
+    GLCALL(GLint color_loc = glGetUniformLocation(shaders::base_shader, "u_Material.color"));
+    ASSERT(color_loc != -1);
 
     GLCALL(GLint diffuse_loc = glGetUniformLocation(shaders::base_shader, "u_Material.diffuse"));
     ASSERT(diffuse_loc != -1);
@@ -110,13 +106,23 @@ static void VBOMaterial(Material material)
     GLCALL(GLint specular_loc = glGetUniformLocation(shaders::base_shader, "u_Material.specular"));
     ASSERT(specular_loc != -1);
 
-    GLCALL(GLint shininess_loc = glGetUniformLocation(shaders::base_shader, "u_Material.shininess"));
-    ASSERT(shininess_loc != -1);
-
     GLCALL(glUniform3f(ambient_loc, material.ambient.x, material.ambient.y, material.ambient.z));
-    GLCALL(glUniform3f(diffuse_loc, material.diffuse.x, material.diffuse.y, material.diffuse.z));
-    GLCALL(glUniform3f(specular_loc, material.specular.x, material.specular.y, material.specular.z));
+    GLCALL(glUniform4f(color_loc, material.color.x, material.color.y, material.color.z, material.color.w));
     GLCALL(glUniform1f(shininess_loc, material.shininess));
+    GLCALL(glUniform1i(diffuse_loc, 0));
+    GLCALL(glUniform1i(specular_loc, 1));
+
+    if (material.diffuse)
+    {
+        GLCALL(glActiveTexture(GL_TEXTURE0));
+        GLCALL(glBindTexture(GL_TEXTURE_2D, material.diffuse));
+    }
+
+    if (material.specular)
+    {
+        GLCALL(glActiveTexture(GL_TEXTURE1));
+        GLCALL(glBindTexture(GL_TEXTURE_2D, material.specular));
+    }
 }
 
 static void VBOShading(std::vector<Light>* lights)
@@ -174,14 +180,8 @@ void Shape::Draw()
     VBOTransform(this->position, this->rotation, this->scale);
     VBOModelViewProjection(&render::cam);
 
-    VBOColor(this->color);
     VBOMaterial(this->material);
     VBOShading(&render::lights);
-
-    if (this->texture)
-    {
-        GLCALL(glBindTexture(GL_TEXTURE_2D, texture));
-    }
 
     if (this->ibo)
     {
@@ -192,20 +192,16 @@ void Shape::Draw()
     {
         GLCALL(glDrawArrays(GL_TRIANGLES, 0, this->indices));
     }
-
-    GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
-    GLCALL(glBindVertexArray(0));
 }
 
 Shape::~Shape()
 {
     GLuint buffers[] = { vbo, ibo };
     GLCALL(glDeleteBuffers(2, buffers));
-    GLCALL(glDeleteTextures(1, &texture));
     GLCALL(glDeleteVertexArrays(1, &vao));
 }
 
-ShapedObject::ShapedObject(const char* object_path, const char* texture_path)
+ShapedObject::ShapedObject(const char* object_path)
 {
     GLCALL(glGenVertexArrays(1, &this->vao));
     GLCALL(glBindVertexArray(this->vao));
@@ -217,7 +213,6 @@ ShapedObject::ShapedObject(const char* object_path, const char* texture_path)
 
     this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(GLfloat));
     this->indices = obj.vert_indices.size();
-    this->texture = GenerateTexture(texture_path);
 
     GLCALL(glBindVertexArray(0));
 }
