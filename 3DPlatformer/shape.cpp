@@ -48,16 +48,21 @@ static GLuint GenerateIBO(GLuint* indices, GLsizei indices_size)
 
 static void VBOTransform(glm::vec3 pos, glm::quat rot, glm::vec3 scale)
 {
-    GLCALL(GLint loc = glGetUniformLocation(shaders::base_shader, "u_Transform"));
-    ASSERT(loc != -1);
+    GLCALL(GLint transform_loc = glGetUniformLocation(shaders::base_shader, "u_Transform"));
+    ASSERT(transform_loc != -1);
+
+    GLCALL(GLint normal_loc = glGetUniformLocation(shaders::base_shader, "u_Normal"));
+    ASSERT(normal_loc != -1);
 
     glm::mat4 translate_mat = glm::translate(glm::mat4(1.0f), pos);
     glm::mat4 scale_mat = glm::scale(glm::mat4(1.0f), scale);
     glm::mat4 rot_mat = glm::toMat4(rot);
 
     glm::mat4 transform_mat = translate_mat * rot_mat * scale_mat;
+    glm::mat3 normal_mat = glm::transpose(glm::inverse(transform_mat));
 
-    GLCALL(glUniformMatrix4fv(loc, 1, GL_FALSE, &transform_mat[0][0]));
+    GLCALL(glUniformMatrix4fv(transform_loc, 1, GL_FALSE, &transform_mat[0][0]));
+    GLCALL(glUniformMatrix3fv(normal_loc, 1, GL_FALSE, &normal_mat[0][0]));
 }
 
 static void VBOModelViewProjection(Camera* cam)

@@ -11,12 +11,13 @@ out vec2 uv;
 
 uniform mat4 u_Transform;
 uniform mat4 u_MVP;
+uniform mat3 u_Normal;
 
 void main()
 {
    gl_Position = u_MVP * u_Transform * vec4(vertex_pos, 1.0);
    fragPos = vec3(u_Transform * vec4(vertex_pos, 1.0));
-   normal = vec3(u_Transform * vec4(vertex_normal, 0.0));
+   normal = u_Normal * vertex_normal;
    uv = vertex_uv;
 };
 
