@@ -67,8 +67,11 @@ static void VBOTransform(glm::vec3 pos, glm::quat rot, glm::vec3 scale)
 
 static void VBOModelViewProjection(Camera* cam)
 {
-    GLCALL(GLint loc = glGetUniformLocation(shaders::base_shader, "u_MVP"));
-    ASSERT(loc != -1);
+    GLCALL(GLint mvp_loc = glGetUniformLocation(shaders::base_shader, "u_MVP"));
+    ASSERT(mvp_loc != -1);
+
+    GLCALL(GLint viewPos_loc = glGetUniformLocation(shaders::base_shader, "u_ViewPos"));
+    ASSERT(viewPos_loc != -1);
 
     glm::mat4 projection_mat = glm::perspective(
         glm::radians(45.0f),
@@ -85,7 +88,8 @@ static void VBOModelViewProjection(Camera* cam)
 
     glm::mat4 mvp = projection_mat * view_mat;
 
-    GLCALL(glUniformMatrix4fv(loc, 1, GL_FALSE, &mvp[0][0]));
+    GLCALL(glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, &mvp[0][0]));
+    GLCALL(glUniform3f(viewPos_loc, cam->position.x, cam->position.y, cam->position.z));
 }
 
 static void VBOColor(glm::vec4 color)
@@ -93,6 +97,26 @@ static void VBOColor(glm::vec4 color)
     GLCALL(GLint loc = glGetUniformLocation(shaders::base_shader, "u_Color"));
     ASSERT(loc != -1);
     GLCALL(glUniform4f(loc, color.x, color.y, color.z, color.w));
+}
+
+static void VBOMaterial(Material material)
+{
+    GLCALL(GLint ambient_loc = glGetUniformLocation(shaders::base_shader, "u_Material.ambient"));
+    ASSERT(ambient_loc != -1);
+
+    GLCALL(GLint diffuse_loc = glGetUniformLocation(shaders::base_shader, "u_Material.diffuse"));
+    ASSERT(diffuse_loc != -1);
+
+    GLCALL(GLint specular_loc = glGetUniformLocation(shaders::base_shader, "u_Material.specular"));
+    ASSERT(specular_loc != -1);
+
+    GLCALL(GLint shininess_loc = glGetUniformLocation(shaders::base_shader, "u_Material.shininess"));
+    ASSERT(shininess_loc != -1);
+
+    GLCALL(glUniform3f(ambient_loc, material.ambient.x, material.ambient.y, material.ambient.z));
+    GLCALL(glUniform3f(diffuse_loc, material.diffuse.x, material.diffuse.y, material.diffuse.z));
+    GLCALL(glUniform3f(specular_loc, material.specular.x, material.specular.y, material.specular.z));
+    GLCALL(glUniform1f(shininess_loc, material.shininess));
 }
 
 static void VBOShading(std::vector<Light>* lights)
@@ -151,6 +175,7 @@ void Shape::Draw()
     VBOModelViewProjection(&render::cam);
 
     VBOColor(this->color);
+    VBOMaterial(this->material);
     VBOShading(&render::lights);
 
     if (this->texture)

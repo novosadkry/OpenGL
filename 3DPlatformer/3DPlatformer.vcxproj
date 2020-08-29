@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="error.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="material.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="main.cpp" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="error.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="screen.h" />

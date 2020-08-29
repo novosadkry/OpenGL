@@ -25,26 +25,32 @@ int main()
     shaders::base_shader = CreateShaderProgram();
 
     Shape* textShape = new ShapedObject("res/obj/napis.obj", "res/textures/white.png");
-    textShape->color = { 1.0f, 0.2f, 0.2f, 1.0f };
+    textShape->position = { 2.0f, 0.0f, 0.0f };
+    textShape->color = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+    Shape* crate = new ShapedObject("res/obj/cube.obj", "res/textures/crate.png");
+    crate->position = { 0.0f, 0.0f, 0.0f };
+    crate->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     Shape* cubeLight = new ShapedObject("res/obj/cube.obj", "res/textures/white.png");
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight->position = { 0.3f, 0.3f, 5.0f };
 
-    Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj", "res/textures/crate.png");
+    Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj", "res/textures/white.png");
     cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight2->position = { 2.3f, 0.3f, 5.0f };
 
     render::shapes.push_back(textShape);
+    render::shapes.push_back(crate);
     render::shapes.push_back(cubeLight);
     render::shapes.push_back(cubeLight2);
 
     Light light;
-    light.intensity = 5.0f;
+    light.intensity = 1.0f;
     light.position = &cubeLight->position;
 
     Light light2;
-    light2.intensity = 5.0f;
+    light2.intensity = 1.0f;
     light2.position = &cubeLight2->position;
 
     render::cam.position = { 0.0f, 0.0f, 5.0f };

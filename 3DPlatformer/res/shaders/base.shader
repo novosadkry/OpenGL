@@ -31,6 +31,14 @@ struct Light
 	float intensity;
 };
 
+struct Material
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+};
+
 in vec3 normal;
 in vec3 fragPos;
 in vec2 uv;
@@ -39,31 +47,41 @@ out vec4 FragColor;
 
 uniform vec4 u_Color;
 uniform sampler2D u_Texture;
+uniform Material u_Material;
 
 uniform Light[16] u_Light;
 uniform int u_Light_Count;
 
+uniform vec3 u_ViewPos;
+
 vec3 calculateLight(Light[16] lights, int light_count)
 {
 	vec3 result_color;
-	vec3 ambient = vec3(0.3, 0.3, 0.3);
 
 	for (int i = 0; i < light_count; i++)
 	{
 		Light light = lights[i];
 
-		vec3 light_Dir = normalize(light.position - fragPos);
-		float light_Dist = length(light.position - fragPos);
+		// Diffuse calculation
+		vec3 lightDir = normalize(light.position - fragPos);
+		float lightDist = length(light.position - fragPos);
 
-		float diff = max(dot(normal, light_Dir), 0.0);
-		diff = diff * (light.intensity / (1.0 + (0.25 * light_Dist * light_Dist)));
+		float diff = max(dot(normal, lightDir), 0.0);
+		diff = diff * (light.intensity / (1.0 + (0.25 * lightDist * lightDist)));
+		
+		vec3 diffuse = diff * u_Material.diffuse * light.color;
 
-		vec3 diffuse = diff * light.color;
+		// Specular calculation
+		vec3 viewDir = normalize(u_ViewPos - fragPos);
+		vec3 reflectDir = reflect(-lightDir, normal);
 
-		result_color += diffuse * vec3(u_Color);
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_Material.shininess);
+		vec3 specular = u_Material.specular * spec * light.color;
+
+		result_color += (diffuse + specular) * vec3(u_Color);
 	}
 
-	return result_color + (ambient * vec3(u_Color));
+	return result_color + (u_Material.ambient * vec3(u_Color));
 }
 
 void main()

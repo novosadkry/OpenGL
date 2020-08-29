@@ -6,6 +6,8 @@
 #include <glm\glm.hpp>
 #include <glm\gtx\quaternion.hpp>
 
+#include "material.h"
+
 class Shape
 {
 protected:
@@ -15,6 +17,7 @@ protected:
 	GLsizei indices;
 
 	GLuint texture = 0;
+	Material material = materials::none;
 
 public:
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
