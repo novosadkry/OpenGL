@@ -8,6 +8,7 @@
 #include "shape.h"
 
 #include <string>
+#include <vector>
 #include <memory>
 #include <map>
 
@@ -17,5 +18,5 @@ namespace lua
 	void close();
 
 	void LoadMaterials(std::map<std::string, Material>& materials);
-	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes);
+	void LoadObjects(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::vector<Light>& lights);
 }

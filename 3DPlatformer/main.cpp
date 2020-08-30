@@ -28,19 +28,9 @@ int main()
     shaders::base_shader = CreateShaderProgram();
 
     lua::LoadMaterials(render::materials);
-    lua::LoadShapes(render::shapes);
-
-    Light light;
-    light.intensity = 2.0f;
-    light.position = { 0.3f, 0.3f, 5.0f };
-
-    Light light2;
-    light2.intensity = 2.0f;
-    light2.position = { 2.3f, 0.3f, 5.0f };
+    lua::LoadObjects(render::shapes, render::lights);
 
     render::cam.position = { 0.0f, 0.0f, 5.0f };
-    render::lights.push_back(light);
-    render::lights.push_back(light2);
 
     GLCALL(glEnable(GL_CULL_FACE));
     GLCALL(glEnable(GL_DEPTH_TEST));
