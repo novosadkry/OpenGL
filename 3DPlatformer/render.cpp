@@ -2,9 +2,10 @@
 
 namespace render
 {
-	Camera cam = Camera();
-	std::vector<Light> lights = std::vector<Light>();
-	std::vector<Shape*> shapes = std::vector<Shape*>();
+	Camera cam;
+	std::vector<Light> lights;
+	std::vector<Shape*> shapes;
+	std::map<std::string, Material> materials;
 
 	float lastFrame = 0.0f;
 	float deltaTime = 0.0f;

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "error.h"
-
+#include <GL\glew.h>
 #include <glm\glm.hpp>
 
 struct Material

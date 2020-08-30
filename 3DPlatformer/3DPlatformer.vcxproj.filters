@@ -19,6 +19,12 @@
     <Filter Include="Resource Files\obj">
       <UniqueIdentifier>{6f0df7bc-d4b3-418a-b025-1bf589cdd8f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\textures">
+      <UniqueIdentifier>{f66b7a7e-8da9-4681-92df-2edc63b774a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua Files">
+      <UniqueIdentifier>{1003da34-f3c7-4978-b2a5-783c20cc7d32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,6 +54,9 @@
     <ClCompile Include="texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -74,10 +83,16 @@
     <ClInclude Include="material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\base.shader">
       <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="lua\materials.lua">
+      <Filter>Lua Files</Filter>
     </None>
   </ItemGroup>
 </Project>

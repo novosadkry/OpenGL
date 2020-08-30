@@ -3,9 +3,7 @@
 #include "shader.h"
 #include "error.h"
 #include "render.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "texture.h"
+#include "lua.h"
 
 #include <glm\glm.hpp>
 #include <glm\gtx\string_cast.hpp>
@@ -16,6 +14,8 @@ void handleInput(GLFWwindow* window);
 
 int main()
 {
+    lua::init();
+
     if (!screen::init(WindowMode::WINDOWED, 1024, 720, "Fiola je legenda"))
         return -1;
 
@@ -27,39 +27,22 @@ int main()
 
     shaders::base_shader = CreateShaderProgram();
 
-    Material defaultMat;
-    defaultMat.ambient = { 0.2f, 0.2f, 0.2f };
-    defaultMat.shininess = 32.0f;
-    defaultMat.diffuse = GenerateTexture("res/textures/white.png");
-    defaultMat.specular = GenerateTexture("res/textures/white.png");
-    defaultMat.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    Material crateMat;
-    crateMat.ambient = { 0.2f, 0.2f, 0.2f };
-    crateMat.shininess = 32.0f;
-    crateMat.diffuse = GenerateTexture("res/textures/container.png");
-    crateMat.specular = GenerateTexture("res/textures/container_specular.png");
-    crateMat.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    Shape* textShape = new ShapedObject("res/obj/napis.obj");
-    textShape->position = { 2.0f, 0.0f, 0.0f };
-    textShape->material = defaultMat;
+    lua::LoadMaterials(render::materials);
 
     Shape* crate = new ShapedObject("res/obj/cube.obj");
     crate->position = { 0.0f, 0.0f, 0.0f };
-    crate->material = crateMat;
+    crate->material = render::materials["crateMat"];
 
     Shape* cubeLight = new ShapedObject("res/obj/cube.obj");
     cubeLight->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight->position = { 0.3f, 0.3f, 5.0f };
-    cubeLight->material = defaultMat;
+    cubeLight->material = render::materials["defaultMat"];
 
     Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj");
     cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
     cubeLight2->position = { 2.3f, 0.3f, 5.0f };
-    cubeLight2->material = defaultMat;
+    cubeLight2->material = render::materials["defaultMat"];
 
-    render::shapes.push_back(textShape);
     render::shapes.push_back(crate);
     render::shapes.push_back(cubeLight);
     render::shapes.push_back(cubeLight2);
@@ -102,8 +85,18 @@ int main()
     for (auto& shape : render::shapes)
         delete shape;
 
+    for (auto& pair : render::materials)
+    {
+        Material& mat = pair.second;
+        GLuint textures[] = { mat.diffuse, mat.specular };
+
+        GLCALL(glDeleteTextures(2, textures));
+    }
+
     glDeleteProgram(shaders::base_shader);
     glfwTerminate();
+
+    lua::close();
 
     return 0;
 }
