@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="lua\materials.lua" />
+    <None Include="lua\objects.lua" />
     <None Include="res\shaders\base.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

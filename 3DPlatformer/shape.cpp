@@ -147,7 +147,7 @@ static void VBOShading(std::vector<Light>* lights)
         GLCALL(GLint intensity_loc = glGetUniformLocation(shaders::base_shader, s));
         ASSERT(intensity_loc != -1);
 
-        GLCALL(glUniform3f(pos_loc, light.position->x, light.position->y, light.position->z));
+        GLCALL(glUniform3f(pos_loc, light.position.x, light.position.y, light.position.z));
         GLCALL(glUniform3f(color_loc, light.color.x, light.color.y, light.color.z));
         GLCALL(glUniform1f(intensity_loc, light.intensity));
     }

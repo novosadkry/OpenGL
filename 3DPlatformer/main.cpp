@@ -28,32 +28,15 @@ int main()
     shaders::base_shader = CreateShaderProgram();
 
     lua::LoadMaterials(render::materials);
-
-    Shape* crate = new ShapedObject("res/obj/cube.obj");
-    crate->position = { 0.0f, 0.0f, 0.0f };
-    crate->material = render::materials["crateMat"];
-
-    Shape* cubeLight = new ShapedObject("res/obj/cube.obj");
-    cubeLight->scale = { 0.1f, 0.1f, 0.1f };
-    cubeLight->position = { 0.3f, 0.3f, 5.0f };
-    cubeLight->material = render::materials["defaultMat"];
-
-    Shape* cubeLight2 = new ShapedObject("res/obj/cube.obj");
-    cubeLight2->scale = { 0.1f, 0.1f, 0.1f };
-    cubeLight2->position = { 2.3f, 0.3f, 5.0f };
-    cubeLight2->material = render::materials["defaultMat"];
-
-    render::shapes.push_back(crate);
-    render::shapes.push_back(cubeLight);
-    render::shapes.push_back(cubeLight2);
+    lua::LoadShapes(render::shapes);
 
     Light light;
     light.intensity = 2.0f;
-    light.position = &cubeLight->position;
+    light.position = { 0.3f, 0.3f, 5.0f };
 
     Light light2;
     light2.intensity = 2.0f;
-    light2.position = &cubeLight2->position;
+    light2.position = { 2.3f, 0.3f, 5.0f };
 
     render::cam.position = { 0.0f, 0.0f, 5.0f };
     render::lights.push_back(light);
@@ -68,7 +51,7 @@ int main()
         GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         for (auto& shape : render::shapes)
-            shape->Draw();
+            shape.second->Draw();
 
         handleInput(screen::window);
         
@@ -82,8 +65,13 @@ int main()
         GLCALL(glfwPollEvents());
     }
 
-    for (auto& shape : render::shapes)
-        delete shape;
+    // Clean-up
+
+    for (auto& pair : render::shapes)
+    {
+        auto& shape = pair.second;
+        shape.release();
+    }
 
     for (auto& pair : render::materials)
     {

@@ -94,5 +94,8 @@
     <None Include="lua\materials.lua">
       <Filter>Lua Files</Filter>
     </None>
+    <None Include="lua\objects.lua">
+      <Filter>Lua Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

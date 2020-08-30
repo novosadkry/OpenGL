@@ -26,12 +26,12 @@ void handleInput(GLFWwindow* window)
 
 	for (auto& light : render::lights)
 	{
-		light.position->z -= (bKeyNum8 ? 2.0f : 0.0f) * render::deltaTime;
-		light.position->z += (bKeyNum5 ? 2.0f : 0.0f) * render::deltaTime;
-		light.position->x -= (bKeyNum4 ? 2.0f : 0.0f) * render::deltaTime;
-		light.position->x += (bKeyNum6 ? 2.0f : 0.0f) * render::deltaTime;
-		light.position->y += (bKeyNum2 ? 2.0f : 0.0f) * render::deltaTime;
-		light.position->y -= (bKeyNum0 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.z -= (bKeyNum8 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.z += (bKeyNum5 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.x -= (bKeyNum4 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.x += (bKeyNum6 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.y += (bKeyNum2 ? 2.0f : 0.0f) * render::deltaTime;
+		light.position.y -= (bKeyNum0 ? 2.0f : 0.0f) * render::deltaTime;
 	}
 }
 
