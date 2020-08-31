@@ -21,7 +21,7 @@ int main()
 {
     lua::init();
 
-    if (!screen::init(WindowMode::WINDOWED, 1024, 720, "Fiola je legenda"))
+    if (!screen::init(WindowMode::WINDOWED, 1024, 720, "RealEngine"))
         return -1;
 
     glfwMakeContextCurrent(screen::window);
@@ -55,7 +55,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        GUI::ShowObjectsWindow();
+        GUI::ShowMainWindow();
 
         for (auto& shape : render::shapes)
             shape.second->Draw();

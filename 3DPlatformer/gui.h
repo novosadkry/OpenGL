@@ -2,5 +2,6 @@
 
 namespace GUI
 {
+	void ShowMainWindow();
 	void ShowObjectsWindow();
 }

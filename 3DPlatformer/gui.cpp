@@ -5,22 +5,56 @@
 #include "gui.h"
 #include "render.h"
 
+bool showObjectsWindow;
+
+void GUI::ShowMainWindow()
+{
+    ImGui::Begin("Debug");
+
+    ImGui::Checkbox("Objects", &showObjectsWindow);
+
+    ImGui::End();
+
+    if (showObjectsWindow)
+        ShowObjectsWindow();
+}
+
 void GUI::ShowObjectsWindow()
 {
-    ImGui::Begin("Objects");
+    ImGui::Begin("Objects", &showObjectsWindow);
 
     for (auto& shape : render::shapes)
     {
         if (ImGui::CollapsingHeader(shape.first.c_str()))
         {
+            ImGui::BeginChild(shape.first.c_str(), ImVec2(0, 300));
+
             Shape* s = shape.second.get();
 
-            ImGui::SliderFloat3("position", &s->position.x, -10, 10);
-            ImGui::SliderFloat3("scale", &s->scale.x, 0, 10);
+            ImGui::Spacing();
+            ImGui::Text("Transform");
+            ImGui::Separator();
+
+            ImGui::DragFloat3("position", &s->position.x, 0.01f);
+            ImGui::DragFloat3("scale", &s->scale.x, 0.1f, 0, 1000, "%.1f", ImGuiSliderFlags_ClampOnInput);
 
             glm::vec3 rotation = glm::degrees(s->rotation);
             ImGui::SliderFloat3("rotation", &rotation.x, 0, 360);
             s->rotation = glm::radians(rotation);
+
+            ImGui::Spacing();
+            ImGui::Text("Material");
+            ImGui::Separator();
+
+            ImGui::Image((void*)(intptr_t)s->material.diffuse, ImVec2(100, 100));
+            ImGui::SameLine();
+            ImGui::Image((void*)(intptr_t)s->material.specular, ImVec2(100, 100));
+
+            ImGui::ColorEdit4("color", &s->material.color.x, ImGuiColorEditFlags_AlphaBar);
+            ImGui::ColorEdit3("ambient", &s->material.ambient.x);
+            ImGui::SliderFloat("shininess", &s->material.shininess, 0, 100);
+            
+            ImGui::EndChild();
         }
     }
 
@@ -34,9 +68,13 @@ void GUI::ShowObjectsWindow()
 
             Light& l = render::lights[i];
 
-            ImGui::SliderFloat3("position", &l.position.x, -10, 10);
-            ImGui::SliderFloat("intensity", &l.intensity, 0, 10);
-            ImGui::ColorEdit3("color", &l.color.r);
+            ImGui::Spacing();
+            ImGui::Text("Transform");
+            ImGui::Separator();
+
+            ImGui::DragFloat3("position", &l.position.x, 0.01f);
+            ImGui::DragFloat("intensity", &l.intensity, 0.1f, 0, 1000, "%.1f", ImGuiSliderFlags_ClampOnInput);
+            ImGui::ColorEdit3("color", &l.color.r, ImGuiColorEditFlags_PickerHueWheel);
 
             ImGui::EndChild();
         }
