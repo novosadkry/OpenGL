@@ -43,7 +43,7 @@ static GLuint GenerateIBO(GLuint* indices, GLsizei indices_size)
     return buffer;
 }
 
-static void VBOTransform(glm::vec3 pos, glm::quat rot, glm::vec3 scale)
+static void VBOTransform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
 {
     GLCALL(GLint transform_loc = glGetUniformLocation(shaders::base_shader, "u_Transform"));
     ASSERT(transform_loc != -1);
@@ -53,7 +53,7 @@ static void VBOTransform(glm::vec3 pos, glm::quat rot, glm::vec3 scale)
 
     glm::mat4 translate_mat = glm::translate(glm::mat4(1.0f), pos);
     glm::mat4 scale_mat = glm::scale(glm::mat4(1.0f), scale);
-    glm::mat4 rot_mat = glm::toMat4(rot);
+    glm::mat4 rot_mat = glm::toMat4(glm::quat(rot));
 
     glm::mat4 transform_mat = translate_mat * rot_mat * scale_mat;
     glm::mat3 normal_mat = glm::transpose(glm::inverse(transform_mat));

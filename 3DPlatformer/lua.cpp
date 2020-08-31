@@ -163,9 +163,7 @@ namespace lua
 					shape->material = render::materials[getString("material")];
 					shape->position = getVec3("position");
 					shape->scale = getVec3("scale");
-
-					glm::vec3 euler = getVec3("rotation");
-					shape->rotation = glm::quat(euler);
+					shape->rotation = getVec3("rotation");
 
 					shapes.emplace(name, std::move(shape));
 					lua_pop(L, 1);

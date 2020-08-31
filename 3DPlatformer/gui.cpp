@@ -18,9 +18,9 @@ void GUI::ShowObjectsWindow()
             ImGui::SliderFloat3("position", &s->position.x, -10, 10);
             ImGui::SliderFloat3("scale", &s->scale.x, 0, 10);
 
-            glm::vec3 euler = glm::eulerAngles(s->rotation);
-            ImGui::SliderFloat3("rotation", &euler.x, 0, glm::pi<float>() * 2);
-            s->rotation = glm::quat(euler);
+            glm::vec3 rotation = glm::degrees(s->rotation);
+            ImGui::SliderFloat3("rotation", &rotation.x, 0, 360);
+            s->rotation = glm::radians(rotation);
         }
     }
 
