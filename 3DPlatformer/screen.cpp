@@ -76,7 +76,7 @@ namespace screen
         }
 
         glfwSetInputMode(window, GLFW_STICKY_KEYS, true);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         glfwSetFramebufferSizeCallback(window, framebuffer_size);
         glfwSetCursorPosCallback(window, mouse_callback);

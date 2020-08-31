@@ -1,9 +1,14 @@
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "screen.h"
 #include "shape.h"
 #include "shader.h"
 #include "error.h"
 #include "render.h"
 #include "lua.h"
+#include "gui.h"
 
 #include <glm\glm.hpp>
 #include <glm\gtx\string_cast.hpp>
@@ -35,10 +40,22 @@ int main()
     GLCALL(glEnable(GL_CULL_FACE));
     GLCALL(glEnable(GL_DEPTH_TEST));
 
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(screen::window, true);
+    ImGui_ImplOpenGL3_Init();
+
     while (!glfwWindowShouldClose(screen::window))
     {
         GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        GUI::ShowObjectsWindow();
 
         for (auto& shape : render::shapes)
             shape.second->Draw();
@@ -50,6 +67,9 @@ int main()
         render::lastFrame = currentFrame;
 
         //std::cout << "FPS: " << 1.0f / render::deltaTime << std::endl;
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         GLCALL(glfwSwapBuffers(screen::window));
         GLCALL(glfwPollEvents());
@@ -71,7 +91,11 @@ int main()
         GLCALL(glDeleteTextures(2, textures));
     }
 
-    glDeleteProgram(shaders::base_shader);
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    GLCALL(glDeleteProgram(shaders::base_shader));
     glfwTerminate();
 
     lua::close();
