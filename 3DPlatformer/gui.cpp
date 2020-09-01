@@ -5,11 +5,21 @@
 #include "gui.h"
 #include "render.h"
 
+#include <list>
+#include <vector>
+
 bool showObjectsWindow;
+bool showFPSChild;
+std::list<float> timings;
 
 void GUI::ShowMainWindow()
 {
     ImGui::Begin("Debug");
+
+    ImGui::Checkbox("FPS", &showFPSChild);
+
+    if (showFPSChild)
+        ShowFPSChild();
 
     ImGui::Checkbox("Objects", &showObjectsWindow);
 
@@ -17,6 +27,39 @@ void GUI::ShowMainWindow()
 
     if (showObjectsWindow)
         ShowObjectsWindow();
+}
+
+void GUI::ShowFPSChild()
+{
+    ImGui::BeginChild("FPS", ImVec2(0, 80));
+    
+    ImGui::Spacing();
+    ImGui::Text("FPS");
+    ImGui::SameLine();
+    ImGui::TextColored(ImColor(255, 255, 0), "%.2f", 1 / render::deltaTime);
+    ImGui::Separator();
+
+    timings.push_back(1 / render::deltaTime);
+
+    if (timings.size() > 100)
+        timings.pop_front();
+
+    std::vector<float> timing_values;
+
+    float sum = 0;
+    for (float& v : timings)
+    {
+        timing_values.push_back(v);
+        sum += v;
+    }
+
+    float avg = sum / timings.size();
+    char average[16];
+    sprintf_s(average, "%.2f avg", avg);
+
+    ImGui::PlotLines("Graph", timing_values.data(), timings.size(), 0, average, 0, avg * 2, ImVec2(0, 50));
+
+    ImGui::EndChild();
 }
 
 void GUI::ShowObjectsWindow()

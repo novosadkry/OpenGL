@@ -66,8 +66,6 @@ int main()
         render::deltaTime = currentFrame - render::lastFrame;
         render::lastFrame = currentFrame;
 
-        //std::cout << "FPS: " << 1.0f / render::deltaTime << std::endl;
-
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
