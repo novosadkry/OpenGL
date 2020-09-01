@@ -36,7 +36,7 @@ void GUI::ShowObjectsWindow()
             ImGui::Separator();
 
             ImGui::DragFloat3("position", &s->position.x, 0.01f);
-            ImGui::DragFloat3("scale", &s->scale.x, 0.1f, 0, 1000, "%.1f", ImGuiSliderFlags_ClampOnInput);
+            ImGui::DragFloat3("scale", &s->scale.x, 0.01f, 0, 1000, "%.3f", ImGuiSliderFlags_ClampOnInput);
 
             glm::vec3 rotation = glm::degrees(s->rotation);
             ImGui::SliderFloat3("rotation", &rotation.x, 0, 360);
