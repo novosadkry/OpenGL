@@ -81,6 +81,9 @@
     <ClCompile Include="gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImGui\imgui_stdlib.cpp">
+      <Filter>Source Files\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -121,7 +124,7 @@
     <None Include="lua\materials.lua">
       <Filter>Lua Files</Filter>
     </None>
-    <None Include="lua\objects.lua">
+    <None Include="lua\shapes.lua">
       <Filter>Lua Files</Filter>
     </None>
   </ItemGroup>

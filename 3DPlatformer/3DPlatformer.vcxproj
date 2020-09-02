@@ -170,6 +170,7 @@
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="lua.cpp" />
@@ -196,7 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="lua\materials.lua" />
-    <None Include="lua\objects.lua" />
+    <None Include="lua\shapes.lua" />
     <None Include="res\shaders\base.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

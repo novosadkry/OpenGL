@@ -1,4 +1,6 @@
 #include <imgui.h>
+#include <imgui_stdlib.h>
+#include <imgui_internal.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
@@ -8,9 +10,8 @@
 #include <list>
 #include <vector>
 
-bool showObjectsWindow;
+bool showShapesWindow;
 bool showFPSChild;
-std::list<float> timings;
 
 void GUI::ShowMainWindow()
 {
@@ -21,12 +22,12 @@ void GUI::ShowMainWindow()
     if (showFPSChild)
         ShowFPSChild();
 
-    ImGui::Checkbox("Objects", &showObjectsWindow);
+    ImGui::Checkbox("Shapes", &showShapesWindow);
 
     ImGui::End();
 
-    if (showObjectsWindow)
-        ShowObjectsWindow();
+    if (showShapesWindow)
+        ShowShapesWindow();
 }
 
 void GUI::ShowFPSChild()
@@ -39,6 +40,7 @@ void GUI::ShowFPSChild()
     ImGui::TextColored(ImColor(255, 255, 0), "%.2f", 1 / render::deltaTime);
     ImGui::Separator();
 
+    static std::list<float> timings;
     timings.push_back(1 / render::deltaTime);
 
     if (timings.size() > 100)
@@ -62,9 +64,11 @@ void GUI::ShowFPSChild()
     ImGui::EndChild();
 }
 
-void GUI::ShowObjectsWindow()
+void GUI::ShowShapesWindow()
 {
-    ImGui::Begin("Objects", &showObjectsWindow);
+    ImGui::Begin("Shapes", &showShapesWindow);
+
+    ImGui::BeginChild("Shapes", ImVec2(0, ImGui::GetWindowHeight() / 2));
 
     for (auto& shape : render::shapes)
     {
@@ -122,6 +126,73 @@ void GUI::ShowObjectsWindow()
             ImGui::EndChild();
         }
     }
+
+    ImGui::EndChild();
+
+    ImGui::BeginChild("Shape creation");
+
+    ImGui::Dummy(ImVec2(0, 0));
+    ImGui::Text("Shape creation");
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    static bool shapedObject = true;
+    static bool light = false;
+
+    if (ImGui::RadioButton("ShapedObject", shapedObject))
+    {
+        shapedObject = true;
+        light = false;
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::RadioButton("Light", light))
+    {
+        shapedObject = false;
+        light = true;
+    }
+
+    ImGui::Spacing();
+
+    if (shapedObject)
+    {
+        static std::string name;
+        static std::string object;
+        static std::string material;
+
+        ImGui::InputText("name", &name);
+        ImGui::InputText(".obj path", &object, ImGuiInputTextFlags_CharsNoBlank);
+
+        if (ImGui::BeginCombo("material", material.c_str()))
+        {
+            for (auto& mat : render::materials)
+            {
+                if (ImGui::Selectable(mat.first.c_str()))
+                    material = mat.first;
+            }
+
+            ImGui::EndCombo();
+        }
+
+        ImGui::Dummy(ImVec2(0, ImGui::GetWindowHeight() - 150));
+
+        if (ImGui::Button("Create", ImVec2(ImGui::GetWindowWidth(), 0)))
+        {
+            std::unique_ptr<Shape> shape;
+            shape = std::make_unique<ShapedObject>(object.c_str());
+            shape->material = render::materials[material];
+
+            render::shapes.emplace(name, std::move(shape));
+        }
+    }
+
+    else if (light)
+    {
+        // TODO: LOL
+    }
+
+    ImGui::EndChild();
 
     ImGui::End();
 }

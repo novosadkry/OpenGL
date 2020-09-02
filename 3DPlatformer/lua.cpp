@@ -140,9 +140,9 @@ namespace lua
 		}
 	}
 
-	void LoadObjects(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::vector<Light>& lights)
+	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::vector<Light>& lights)
 	{
-		if (checkLua(luaL_dofile(L, "lua/objects.lua")))
+		if (checkLua(luaL_dofile(L, "lua/shapes.lua")))
 		{
 			lua_getglobal(L, "shapes");
 

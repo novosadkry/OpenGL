@@ -4,5 +4,5 @@ namespace GUI
 {
 	void ShowMainWindow();
 	void ShowFPSChild();
-	void ShowObjectsWindow();
+	void ShowShapesWindow();
 }

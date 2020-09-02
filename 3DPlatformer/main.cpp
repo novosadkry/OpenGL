@@ -33,7 +33,7 @@ int main()
     shaders::base_shader = CreateShaderProgram();
 
     lua::LoadMaterials(render::materials);
-    lua::LoadObjects(render::shapes, render::lights);
+    lua::LoadShapes(render::shapes, render::lights);
 
     render::cam.position = { 0.0f, 0.0f, 5.0f };
 
