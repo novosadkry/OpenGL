@@ -208,7 +208,15 @@ ShapedObject::ShapedObject(const char* object_path)
 
     Object obj;
 
-    LoadObjectFromFile(&obj, object_path);
+    if (render::objects.count(object_path) != 0)
+        obj = render::objects[object_path];
+
+    else
+    {
+        LoadObjectFromFile(&obj, object_path);
+        render::objects[object_path] = obj;
+    }
+
     std::vector<GLfloat> vertices = GenerateObjectVertices(obj);
 
     this->vbo = GenerateVBO(vertices.data(), vertices.size() * sizeof(GLfloat));
