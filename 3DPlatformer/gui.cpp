@@ -70,11 +70,12 @@ void GUI::ShowShapesWindow()
 
     ImGui::BeginChild("Shapes", ImVec2(0, ImGui::GetWindowHeight() / 2));
 
+    std::list<std::string> shapes_to_destroy;
     for (auto& shape : render::shapes)
     {
         if (ImGui::CollapsingHeader(shape.first.c_str()))
         {
-            ImGui::BeginChild(shape.first.c_str(), ImVec2(0, 300));
+            ImGui::BeginChild(shape.first.c_str(), ImVec2(0, 320));
 
             Shape* s = shape.second.get();
 
@@ -90,6 +91,13 @@ void GUI::ShowShapesWindow()
             s->rotation = glm::radians(rotation);
 
             ImGui::Spacing();
+            ImGui::SameLine(ImGui::GetWindowWidth() - 70);
+            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor(255, 0, 0));
+            if (ImGui::Button("Destroy"))
+                shapes_to_destroy.push_back(shape.first);
+            ImGui::PopStyleColor();
+
+            ImGui::Spacing();
             ImGui::Text("Material");
             ImGui::Separator();
 
@@ -100,7 +108,7 @@ void GUI::ShowShapesWindow()
             ImGui::ColorEdit4("color", &s->material.color.x, ImGuiColorEditFlags_AlphaBar);
             ImGui::ColorEdit3("ambient", &s->material.ambient.x);
             ImGui::SliderFloat("shininess", &s->material.shininess, 0, 100);
-            
+                
             ImGui::EndChild();
         }
     }
@@ -126,6 +134,9 @@ void GUI::ShowShapesWindow()
             ImGui::EndChild();
         }
     }
+
+    for (auto& shape : shapes_to_destroy)
+        render::shapes.erase(shape);
 
     ImGui::EndChild();
 
