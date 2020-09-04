@@ -1,7 +1,6 @@
 materials = {}
 
-materials[1] = {
-	name = "defaultMat",
+materials["defaultMat"] = {
 	ambient = { 0.2, 0.2, 0.2 },
 	shininess = 32.0,
 	diffuse = "res/textures/white.png",
@@ -9,8 +8,7 @@ materials[1] = {
 	color = { 1.0, 1.0, 1.0, 1.0 }
 }
 
-materials[2] = {
-	name = "crateMat",
+materials["crateMat"] = {
 	ambient = { 0.2, 0.2, 0.2 },
 	shininess = 32.0,
 	diffuse = "res/textures/container.png",

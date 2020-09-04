@@ -113,15 +113,13 @@ void GUI::ShowShapesWindow()
         }
     }
 
-    for (size_t i = 0; i < render::lights.size(); i++)
+    for (auto& light : render::lights)
     {
-        std::string name = std::string("Light") + std::to_string(i);
-
-        if (ImGui::CollapsingHeader(name.c_str()))
+        if (ImGui::CollapsingHeader(light.first.c_str()))
         {
-            ImGui::BeginChild(name.c_str(), ImVec2(0, 100));
+            ImGui::BeginChild(light.first.c_str(), ImVec2(0, 100));
 
-            Light& l = render::lights[i];
+            Light& l = light.second;
 
             ImGui::Spacing();
             ImGui::Text("Transform");

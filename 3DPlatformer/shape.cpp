@@ -125,11 +125,13 @@ static void VBOMaterial(Material material)
     }
 }
 
-static void VBOShading(std::vector<Light>* lights)
+static void VBOShading(std::map<std::string, Light>* lights)
 {
-    for (int i = 0; i < lights->size(); i++)
+    int i = 0;
+
+    for (auto& pair : *lights)
     {
-        Light& light = lights->at(i);
+        Light& light = pair.second;
         char s[32];
 
         sprintf_s(s, "u_Light[%d].position", i);
@@ -150,11 +152,13 @@ static void VBOShading(std::vector<Light>* lights)
         GLCALL(glUniform3f(pos_loc, light.position.x, light.position.y, light.position.z));
         GLCALL(glUniform3f(color_loc, light.color.x, light.color.y, light.color.z));
         GLCALL(glUniform1f(intensity_loc, light.intensity));
+
+        i++;
     }
 
     GLCALL(GLint light_count_loc = glGetUniformLocation(shaders::base_shader, "u_Light_Count"));
     ASSERT(light_count_loc != -1);
-    GLCALL(glUniform1i(light_count_loc, lights->size()));
+    GLCALL(glUniform1i(light_count_loc, i));
 }
 
 glm::vec3 Camera::GetForwardVector()

@@ -110,88 +110,68 @@ namespace lua
 		if (checkLua(luaL_dofile(L, "lua/materials.lua")))
 		{
 			lua_getglobal(L, "materials");
+			lua_pushnil(L);
 
-			if (lua_istable(L, -1))
+			while (lua_next(L, -2))
 			{
-				size_t len = lua_rawlen(L, -1);
-				
-				for (size_t i = 1; i <= len; i++)
-				{
-					std::string name;
-					Material mat;
+				std::string name;
+				Material mat;
 
-					lua_pushinteger(L, i);
-					lua_gettable(L, -2);
+				name = lua_tostring(L, -2);
+				mat.ambient = getVec3("ambient");
+				mat.shininess = getFloat("shininess");
+				mat.diffuse = getTexture("diffuse");
+				mat.specular = getTexture("specular");
+				mat.color = getVec4("color");
 
-					name = getString("name");
-					mat.ambient = getVec3("ambient");
-					mat.shininess = getFloat("shininess");
-					mat.diffuse = getTexture("diffuse");
-					mat.specular = getTexture("specular");
-					mat.color = getVec4("color");
-
-					materials.emplace(name, mat);
-					lua_pop(L, 1);
-				}
+				materials.emplace(name, mat);
+				lua_pop(L, 1);
 			}
 
-			int n = lua_gettop(L);
-			lua_pop(L, n);
+			lua_pop(L, lua_gettop(L));
 		}
 	}
 
-	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::vector<Light>& lights)
+	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::map<std::string, Light>& lights)
 	{
 		if (checkLua(luaL_dofile(L, "lua/shapes.lua")))
 		{
 			lua_getglobal(L, "shapes");
+			lua_pushnil(L);
 
-			if (lua_istable(L, -1))
+			while (lua_next(L, -2))
 			{
-				size_t len = lua_rawlen(L, -1);
+				std::string name;
+				std::unique_ptr<Shape> shape;
 
-				for (size_t i = 1; i <= len; i++)
-				{
-					std::string name;
-					std::unique_ptr<Shape> shape;
+				name = lua_tostring(L, -2);
+				shape = std::make_unique<ShapedObject>(getString("obj").c_str());
+				shape->material = render::materials[getString("material")];
+				shape->position = getVec3("position");
+				shape->scale = getVec3("scale");
+				shape->rotation = getVec3("rotation");
 
-					lua_pushinteger(L, i);
-					lua_gettable(L, -2);
-
-					name = getString("name");
-					shape = std::make_unique<ShapedObject>(getString("obj").c_str());
-					shape->material = render::materials[getString("material")];
-					shape->position = getVec3("position");
-					shape->scale = getVec3("scale");
-					shape->rotation = getVec3("rotation");
-
-					shapes.emplace(name, std::move(shape));
-					lua_pop(L, 1);
-				}
+				shapes.emplace(name, std::move(shape));
+				lua_pop(L, 1);
 			}
 
 			lua_pop(L, 1);
 
 			lua_getglobal(L, "lights");
+			lua_pushnil(L);
 
-			if (lua_istable(L, -1))
+			while (lua_next(L, -2))
 			{
-				size_t len = lua_rawlen(L, -1);
+				std::string name;
+				Light light;
 
-				for (size_t i = 1; i <= len; i++)
-				{
-					Light light;
+				name = lua_tostring(L, -2);
+				light.position = getVec3("position");
+				light.color = getVec3("color");
+				light.intensity = getFloat("intensity");
 
-					lua_pushinteger(L, i);
-					lua_gettable(L, -2);
-
-					light.position = getVec3("position");
-					light.color = getVec3("color");
-					light.intensity = getFloat("intensity");
-
-					lights.push_back(light);
-					lua_pop(L, 1);
-				}
+				lights.emplace(name, light);
+				lua_pop(L, 1);
 			}
 
 			lua_pop(L, lua_gettop(L));
