@@ -113,11 +113,12 @@ void GUI::ShowShapesWindow()
         }
     }
 
+    std::list<std::string> lights_to_destroy;
     for (auto& light : render::lights)
     {
         if (ImGui::CollapsingHeader(light.first.c_str()))
         {
-            ImGui::BeginChild(light.first.c_str(), ImVec2(0, 100));
+            ImGui::BeginChild(light.first.c_str(), ImVec2(0, 120));
 
             Light& l = light.second;
 
@@ -129,12 +130,22 @@ void GUI::ShowShapesWindow()
             ImGui::DragFloat("intensity", &l.intensity, 0.1f, 0, 1000, "%.1f", ImGuiSliderFlags_ClampOnInput);
             ImGui::ColorEdit3("color", &l.color.r, ImGuiColorEditFlags_PickerHueWheel);
 
+            ImGui::Spacing();
+            ImGui::SameLine(ImGui::GetWindowWidth() - 70);
+            ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor(255, 0, 0));
+            if (ImGui::Button("Destroy"))
+                lights_to_destroy.push_back(light.first);
+            ImGui::PopStyleColor();
+
             ImGui::EndChild();
         }
     }
 
     for (auto& shape : shapes_to_destroy)
         render::shapes.erase(shape);
+
+    for (auto& light : lights_to_destroy)
+        render::lights.erase(light);
 
     ImGui::EndChild();
 
