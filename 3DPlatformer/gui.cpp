@@ -209,7 +209,17 @@ void GUI::ShowShapesWindow()
 
     else if (light)
     {
-        // TODO: LOL
+        static std::string name;
+        static Light light;
+
+        ImGui::InputText("name", &name);
+        ImGui::ColorEdit3("color", &light.color.r, ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::DragFloat("intensity", &light.intensity, 0.1f, 0, 1000, "%.1f", ImGuiSliderFlags_ClampOnInput);
+
+        ImGui::Dummy(ImVec2(0, ImGui::GetWindowHeight() - 150));
+
+        if (ImGui::Button("Create", ImVec2(ImGui::GetWindowWidth(), 0)))
+            render::lights.emplace(name, light);
     }
 
     ImGui::EndChild();
