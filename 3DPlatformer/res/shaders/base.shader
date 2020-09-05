@@ -77,8 +77,12 @@ vec3 calculateLight(Light[16] lights, int light_count)
 		vec3 reflectDir = reflect(-lightDir, _normal);
 		float viewDist = length(u_ViewPos - fragPos);
 
-		float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_Material.shininess);
-		vec3 specular = spec * texture(u_Material.specular, uv).rgb * light.color * light.intensity * (1 / viewDist);
+		vec3 specular = vec3(0.0, 0.0, 0.0);
+		if (u_Material.shininess > 0.0)
+		{
+			float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_Material.shininess);
+			specular = spec * texture(u_Material.specular, uv).rgb * light.color * light.intensity;
+		}
 
 		result_color += (diffuse + specular) * vec3(u_Material.color);
 	}
