@@ -40,6 +40,9 @@ public:
 	glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 direction = { 0.0f, 0.0f, -1.0f };
 
+	float speed = 1.0f;
+	float maxSpeed = 100.0f;
+
 	glm::vec3 GetForwardVector();
 	glm::vec3 GetRightVector();
 	glm::vec3 GetUpVector();

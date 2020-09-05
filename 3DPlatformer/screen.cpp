@@ -3,6 +3,8 @@
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
 void framebuffer_size(GLFWwindow* window, int width, int height)
 {
     screen::width = width;
@@ -80,6 +82,7 @@ namespace screen
 
         glfwSetFramebufferSizeCallback(window, framebuffer_size);
         glfwSetCursorPosCallback(window, mouse_callback);
+        glfwSetScrollCallback(window, scroll_callback);
 
         glfwGetWindowSize(window, &screen::width, &screen::height);
 

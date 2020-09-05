@@ -26,12 +26,12 @@ void handleInput(GLFWwindow* window)
         bool bKeySpace = glfwGetKey(window, GLFW_KEY_SPACE);
         bool bKeyCtrl = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
 
-        render::cam.position -= (bKeyA ? 1.0f : 0.0f) * render::cam.GetRightVector() * render::deltaTime;
-        render::cam.position += (bKeyD ? 1.0f : 0.0f) * render::cam.GetRightVector() * render::deltaTime;
-        render::cam.position += (bKeyW ? 1.0f : 0.0f) * render::cam.GetForwardVector() * render::deltaTime;
-        render::cam.position -= (bKeyS ? 1.0f : 0.0f) * render::cam.GetForwardVector() * render::deltaTime;
-        render::cam.position += (bKeySpace ? 1.0f : 0.0f) * render::cam.GetUpVector() * render::deltaTime;
-        render::cam.position -= (bKeyCtrl ? 1.0f : 0.0f) * render::cam.GetUpVector() * render::deltaTime;
+        render::cam.position -= (bKeyA ? render::cam.speed : 0.0f) * render::cam.GetRightVector() * render::deltaTime;
+        render::cam.position += (bKeyD ? render::cam.speed : 0.0f) * render::cam.GetRightVector() * render::deltaTime;
+        render::cam.position += (bKeyW ? render::cam.speed : 0.0f) * render::cam.GetForwardVector() * render::deltaTime;
+        render::cam.position -= (bKeyS ? render::cam.speed : 0.0f) * render::cam.GetForwardVector() * render::deltaTime;
+        render::cam.position += (bKeySpace ? render::cam.speed : 0.0f) * render::cam.GetUpVector() * render::deltaTime;
+        render::cam.position -= (bKeyCtrl ? render::cam.speed : 0.0f) * render::cam.GetUpVector() * render::deltaTime;
     }
 }
 
@@ -57,5 +57,19 @@ void mouse_callback(GLFWwindow* window, double posX, double posY)
         render::cam.direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         render::cam.direction.y = sin(glm::radians(pitch));
         render::cam.direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    }
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    if (isMouseHidden)
+    {
+        render::cam.speed += yoffset;
+        
+        if (render::cam.speed > render::cam.maxSpeed)
+            render::cam.speed = render::cam.maxSpeed;
+
+        else if (render::cam.speed < 0.0f)
+            render::cam.speed = 0.0f;
     }
 }

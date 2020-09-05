@@ -11,7 +11,8 @@
 #include <vector>
 
 bool showShapesWindow;
-bool showFPSChild;
+bool showFPSChild = true;
+bool showCamChild = true;
 
 void GUI::ShowMainWindow()
 {
@@ -22,12 +23,32 @@ void GUI::ShowMainWindow()
     if (showFPSChild)
         ShowFPSChild();
 
+    ImGui::Checkbox("Cam", &showCamChild);
+
+    if (showCamChild)
+        ShowCamChild();
+
     ImGui::Checkbox("Shapes", &showShapesWindow);
 
     ImGui::End();
 
     if (showShapesWindow)
         ShowShapesWindow();
+}
+
+void GUI::ShowCamChild()
+{
+    ImGui::BeginChild("Cam", ImVec2(0, 100));
+
+    ImGui::Spacing();
+    ImGui::Text("Camera");
+    ImGui::Separator();
+
+    ImGui::DragFloat3("position", &render::cam.position.x, 0.01f);
+    ImGui::DragFloat3("direction", &render::cam.direction.x, 0.01f, 0, 0, "%.3f", ImGuiSliderFlags_ReadOnly | ImGuiSliderFlags_NoInput);
+    ImGui::SliderFloat("speed", &render::cam.speed, 0, render::cam.maxSpeed, "%.2f");
+
+    ImGui::EndChild();
 }
 
 void GUI::ShowFPSChild()
