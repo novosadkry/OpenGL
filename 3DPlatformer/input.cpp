@@ -39,16 +39,16 @@ void mouse_callback(GLFWwindow* window, double posX, double posY)
 {
     static float lastX, lastY;
 
+    float offsetX = posX - lastX;
+    float offsetY = lastY - posY;
+
+    lastX = posX;
+    lastY = posY;
+
+    static float pitch, yaw = -90.0f;
+
     if (isMouseHidden)
     {
-        float offsetX = posX - lastX;
-        float offsetY = lastY - posY;
-
-        lastX = posX;
-        lastY = posY;
-
-        static float pitch, yaw = -180.0f;
-
         pitch += offsetY * 0.1f;
         yaw += offsetX * 0.1f;
 

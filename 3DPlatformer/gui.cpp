@@ -68,7 +68,7 @@ void GUI::ShowShapesWindow()
 {
     ImGui::Begin("Shapes", &showShapesWindow);
 
-    ImGui::BeginChild("Shapes", ImVec2(0, ImGui::GetWindowHeight() / 2));
+    ImGui::BeginChild("Shapes", ImVec2(0, ImGui::GetWindowHeight() - 200));
 
     std::list<std::string> shapes_to_destroy;
     for (auto& shape : render::shapes)
