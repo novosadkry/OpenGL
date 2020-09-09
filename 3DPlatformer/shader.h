@@ -4,23 +4,22 @@
 #include <glfw3.h>
 
 #include <string>
+#include <vector>
+#include <memory>
 
 namespace shaders
 {
 	extern GLuint base_shader;
 }
 
-typedef std::string ShaderSource;
-
-enum class ShaderType
+struct ShaderSource
 {
-	NONE = -1,
-	VERTEX,
-	FRAGMENT
+	unsigned int type;
+	std::string source;
 };
 
-ShaderSource* ParseShader(const char* path);
+std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path);
 
-GLuint CompileShader(GLenum type, const ShaderSource& source);
+GLuint CompileShader(GLenum type, const char* source);
 
-GLuint CreateShaderProgram();
+GLuint CreateShaderProgram(const char* path);

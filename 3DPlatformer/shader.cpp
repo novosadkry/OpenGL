@@ -4,43 +4,57 @@
 #include <iostream>
 #include <fstream>
 
-GLuint shaders::base_shader;
-
-ShaderSource* ParseShader(const char* path)
+namespace shaders
 {
-    ShaderSource* shaders = new ShaderSource[2];
-    ShaderType current_type = ShaderType::NONE;
+    GLuint base_shader;
+}
+
+std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path)
+{
+    auto shaders = std::make_unique<std::vector<ShaderSource>>();
 
     std::ifstream file_stream(path);
     std::string line;
+
+    ShaderSource current_shader = ShaderSource();
 
     while (std::getline(file_stream, line))
     {
         if (line.find("#shader") != std::string::npos)
         {
-            if (line.find("vertex") != std::string::npos)
-                current_type = ShaderType::VERTEX;
+            if (current_shader.type != 0)
+                shaders->push_back(current_shader);
 
-            if (line.find("fragment") != std::string::npos)
-                current_type = ShaderType::FRAGMENT;
+            current_shader.source.clear();
+
+            if (line.find("vertex") != std::string::npos)
+                current_shader.type = GL_VERTEX_SHADER;
+
+            else if (line.find("fragment") != std::string::npos)
+                current_shader.type = GL_FRAGMENT_SHADER;
+
+            else if (line.find("geometry") != std::string::npos)
+                current_shader.type = GL_GEOMETRY_SHADER;
         }
 
         else
         {
-            ASSERT(current_type != ShaderType::NONE);
-            shaders[(int)current_type].append(line + "\n");
+            ASSERT(current_shader.type != 0);
+            current_shader.source.append(line + "\n");
         }
     }
+    
+    if (current_shader.type != 0)
+        shaders->push_back(current_shader);
 
     return shaders;
 }
 
-GLuint CompileShader(GLenum type, const ShaderSource& source)
+GLuint CompileShader(GLenum type, const char* source)
 {
     GLuint id = glCreateShader(type);
-    const char* _source = source.c_str();
 
-    glShaderSource(id, 1, &_source, nullptr);
+    glShaderSource(id, 1, &source, nullptr);
     glCompileShader(id);
 
     GLint result;
@@ -63,28 +77,24 @@ GLuint CompileShader(GLenum type, const ShaderSource& source)
     return id;
 }
 
-GLuint CreateShaderProgram()
+GLuint CreateShaderProgram(const char* path)
 {
-    ShaderSource* shaders = ParseShader("res/shaders/base.shader");
+    auto shaders = ParseShader(path);
 
     GLuint program = glCreateProgram();
 
-    GLuint vs = CompileShader(GL_VERTEX_SHADER, shaders[(int)ShaderType::VERTEX]);
-    GLuint fs = CompileShader(GL_FRAGMENT_SHADER, shaders[(int)ShaderType::FRAGMENT]);
+    for (ShaderSource shaderSource : *shaders)
+    {
+        GLuint shader = CompileShader(shaderSource.type, shaderSource.source.c_str());
 
-    ASSERT(vs != 0);
-    ASSERT(fs != 0);
+        ASSERT(shader != 0);
+        glAttachShader(program, shader);
 
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
+        glLinkProgram(program);
+        glValidateProgram(program);
 
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-
-    delete[] shaders;
+        glDeleteShader(shader);
+    }
 
     return program;
 }

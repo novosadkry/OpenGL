@@ -30,7 +30,7 @@ int main()
     if (glewInit() != GLEW_OK)
         return -1;
 
-    shaders::base_shader = CreateShaderProgram();
+    shaders::base_shader = CreateShaderProgram("res/shaders/base.shader");
 
     lua::LoadMaterials(render::materials);
     lua::LoadShapes(render::shapes, render::lights);
