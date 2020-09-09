@@ -36,3 +36,20 @@ GLuint GenerateTexture(const char* texture_path)
 
 	return texture;
 }
+
+GLuint GenerateTextureEmpty(GLsizei width, GLsizei height)
+{
+	GLuint texture;
+
+	GLCALL(glGenTextures(1, &texture));
+	GLCALL(glBindTexture(GL_TEXTURE_2D, texture));
+
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	GLCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+
+	GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0));
+
+	GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+
+	return texture;
+}

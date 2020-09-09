@@ -6,3 +6,5 @@
 #include <glfw3.h>
 
 GLuint GenerateTexture(const char* texture_path);
+
+GLuint GenerateTextureEmpty();
