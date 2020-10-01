@@ -11,7 +11,7 @@
 namespace render
 {
 	extern Camera cam;
-	extern std::map<std::string, std::unique_ptr<Shape>> shapes;
+	extern std::map<std::string, std::shared_ptr<Shape>> shapes;
 	extern std::map<std::string, Light> lights;
 	extern std::map<std::string, Object> objects;
 	extern std::map<std::string, Material> materials;

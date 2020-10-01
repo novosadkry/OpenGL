@@ -18,5 +18,5 @@ namespace lua
 	void close();
 
 	void LoadMaterials(std::map<std::string, Material>& materials);
-	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::map<std::string, Light>& lights);
+	void LoadShapes(std::map<std::string, std::shared_ptr<Shape>>& shapes, std::map<std::string, Light>& lights);
 }

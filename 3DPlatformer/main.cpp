@@ -78,7 +78,7 @@ int main()
     for (auto& pair : render::shapes)
     {
         auto& shape = pair.second;
-        shape.release();
+        shape.reset();
     }
 
     for (auto& pair : render::materials)

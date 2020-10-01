@@ -98,7 +98,7 @@ void GUI::ShowShapesWindow()
         {
             ImGui::BeginChild(shape.first.c_str(), ImVec2(0, 320));
 
-            Shape* s = shape.second.get();
+            std::shared_ptr<Shape> s = shape.second;
 
             ImGui::Spacing();
             ImGui::Text("Transform");
@@ -220,8 +220,8 @@ void GUI::ShowShapesWindow()
 
         if (ImGui::Button("Create", ImVec2(ImGui::GetWindowWidth(), 0)))
         {
-            std::unique_ptr<Shape> shape;
-            shape = std::make_unique<ShapedObject>(object.c_str());
+            std::shared_ptr<Shape> shape;
+            shape = std::make_shared<ShapedObject>(object.c_str());
             shape->material = render::materials[material];
 
             render::shapes.emplace(name, std::move(shape));

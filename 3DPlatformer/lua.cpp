@@ -132,7 +132,7 @@ namespace lua
 		}
 	}
 
-	void LoadShapes(std::map<std::string, std::unique_ptr<Shape>>& shapes, std::map<std::string, Light>& lights)
+	void LoadShapes(std::map<std::string, std::shared_ptr<Shape>>& shapes, std::map<std::string, Light>& lights)
 	{
 		if (checkLua(luaL_dofile(L, "lua/shapes.lua")))
 		{
@@ -142,10 +142,10 @@ namespace lua
 			while (lua_next(L, -2))
 			{
 				std::string name;
-				std::unique_ptr<Shape> shape;
+				std::shared_ptr<Shape> shape;
 
 				name = lua_tostring(L, -2);
-				shape = std::make_unique<ShapedObject>(getString("obj").c_str());
+				shape = std::make_shared<ShapedObject>(getString("obj").c_str());
 				shape->material = render::materials[getString("material")];
 				shape->position = getVec3("position");
 				shape->scale = getVec3("scale");
