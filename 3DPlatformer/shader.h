@@ -1,11 +1,9 @@
 #pragma once
 
 #include <GL\glew.h>
-#include <glfw3.h>
 
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace shaders
 {
@@ -14,11 +12,17 @@ namespace shaders
 
 struct ShaderSource
 {
-	unsigned int type;
+	uint16_t type;
 	std::string source;
+	
+	friend ShaderSource& operator<<(ShaderSource& ss, const std::string& other)
+	{
+		ss.source.append(other);
+		return ss;
+	}
 };
 
-std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path);
+std::vector<ShaderSource> ParseShader(const char* path);
 
 GLuint CompileShader(GLenum type, const char* source);
 

@@ -9,9 +9,9 @@ namespace shaders
     GLuint base_shader;
 }
 
-std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path)
+std::vector<ShaderSource> ParseShader(const char* path)
 {
-    auto shaders = std::make_unique<std::vector<ShaderSource>>();
+    auto shaders = std::vector<ShaderSource>();
 
     std::ifstream file_stream(path);
     std::string line;
@@ -23,9 +23,9 @@ std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path)
         if (line.find("#shader") != std::string::npos)
         {
             if (current_shader.type != 0)
-                shaders->push_back(current_shader);
+                shaders.push_back(std::move(current_shader));
 
-            current_shader.source.clear();
+            current_shader = ShaderSource();
 
             if (line.find("vertex") != std::string::npos)
                 current_shader.type = GL_VERTEX_SHADER;
@@ -40,12 +40,12 @@ std::unique_ptr<std::vector<ShaderSource>> ParseShader(const char* path)
         else
         {
             ASSERT(current_shader.type != 0);
-            current_shader.source.append(line + "\n");
+            current_shader << line << "\n";
         }
     }
     
     if (current_shader.type != 0)
-        shaders->push_back(current_shader);
+        shaders.push_back(std::move(current_shader));
 
     return shaders;
 }
@@ -83,7 +83,7 @@ GLuint CreateShaderProgram(const char* path)
 
     GLuint program = glCreateProgram();
 
-    for (ShaderSource shaderSource : *shaders)
+    for (ShaderSource& shaderSource : shaders)
     {
         GLuint shader = CompileShader(shaderSource.type, shaderSource.source.c_str());
 
