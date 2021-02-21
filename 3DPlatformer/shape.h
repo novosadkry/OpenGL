@@ -25,7 +25,7 @@ public:
 
 	virtual void Draw();
 
-	~Shape();
+	virtual ~Shape();
 };
 
 class ShapedObject : public Shape
@@ -43,9 +43,9 @@ public:
 	float speed = 1.0f;
 	float maxSpeed = 100.0f;
 
-	glm::vec3 GetForwardVector();
-	glm::vec3 GetRightVector();
-	glm::vec3 GetUpVector();
+	glm::vec3 GetForwardVector() const;
+	glm::vec3 GetRightVector() const;
+	glm::vec3 GetUpVector() const;
 };
 
 class Light

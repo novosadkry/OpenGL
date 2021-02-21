@@ -4,6 +4,13 @@
 
 #include <vector>
 
+struct Vertex
+{
+	glm::vec3 pos;
+	glm::vec3 normal;
+	glm::vec2 uv;
+};
+
 class Object
 {
 public:
@@ -18,4 +25,4 @@ public:
 
 void LoadObjectFromFile(Object* obj, const char* path);
 
-std::vector<GLfloat> GenerateObjectVertices(Object& obj);
+std::vector<Vertex> GenerateObjectVertices(Object& obj);

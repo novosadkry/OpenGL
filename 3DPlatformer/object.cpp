@@ -1,6 +1,5 @@
 #include "object.h"
 
-#include <iostream>
 #include <fstream>
 #include <string>
 
@@ -52,26 +51,21 @@ void LoadObjectFromFile(Object* obj, const char* path)
     }
 }
 
-std::vector<GLfloat> GenerateObjectVertices(Object& obj)
+std::vector<Vertex> GenerateObjectVertices(Object& obj)
 {
-    std::vector<GLfloat> out;
+    std::vector<Vertex> out;
 
-    for (int i = 0; i < obj.vert_indices.size(); i++)
+    for (size_t i = 0; i < obj.vert_indices.size(); i++)
     {
-        int vert_index = obj.vert_indices[i];
-        int normal_index = obj.normal_indices[i];
-        int uvs_index = obj.uv_indices[i];
-
-        out.push_back(obj.vertices[vert_index].x);
-        out.push_back(obj.vertices[vert_index].y);
-        out.push_back(obj.vertices[vert_index].z);
-
-        out.push_back(obj.normals[normal_index].x);
-        out.push_back(obj.normals[normal_index].y);
-        out.push_back(obj.normals[normal_index].z);
-
-        out.push_back(obj.uvs[uvs_index].x);
-        out.push_back(obj.uvs[uvs_index].y);
+        const int vert_index = obj.vert_indices[i];
+        const int normal_index = obj.normal_indices[i];
+        const int uvs_index = obj.uv_indices[i];
+    	
+        out.emplace_back(Vertex {
+            obj.vertices[vert_index],
+            obj.normals[normal_index],
+            obj.uvs[uvs_index]
+        });
     }
 
     return out;
